@@ -1,0 +1,22 @@
+units           metal
+atom_style      atomic
+newton          on
+boundary        p p p
+read_data       supercell.data
+
+pair_style      mliap unified /home/svu/xintian.wang/project/amorphousSSE/models/MACE-matpes-r2scan-omat-ft.model-mliap_lammps.pt 0
+pair_coeff      * * Cl Li Nb O
+
+neighbor        2.0 bin
+neigh_modify    every 1 delay 0 check yes
+
+timestep        0.002
+thermo          100
+thermo_style    custom step temp pe ke etotal press vol lx ly lz
+
+velocity        all create 300.0 42 dist gaussian
+fix             1 all npt temp 300.0 300.0 0.1 iso 0.0 0.0 1.0
+run             1000
+unfix           1
+
+write_data      relaxed.data
